@@ -1,0 +1,2 @@
+body{margin:10px}body #todo{width:70%}body #todo ul{margin-left:0;padding-left:0}body #todo ul li{list-style-type:none}body #todo ul li .remove-button{padding:0em;border-radius:5px}body #todo ul li .remove-button img{width:39px;height:36px}body #todo ul li .deleteNote{margin:5px;font-size:32px;padding:0 11px}body #todo ul li .input-group-text{padding:0}body #todo ul li .input-group-text .checkbox{margin:10px}body #todo .adding-note{resize:none}.completed{text-decoration:line-through;text-decoration-color:grey}
+/*# sourceMappingURL=main.css.map */

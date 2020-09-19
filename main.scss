@@ -1,0 +1,44 @@
+body {
+  margin: 10px;
+
+  #todo {
+    width: 70%;
+
+    ul {
+      margin-left: 0;
+      padding-left: 0;
+
+      li {
+        list-style-type: none;
+        .remove-button {
+          padding: 0em;
+          border-radius: 5px;
+          img {
+            width: 39px;
+            height: 36px;
+          }
+        }
+
+        .deleteNote {
+          margin: 5px;
+          font-size: 32px;
+          padding: 0 11px;
+        }
+        .input-group-text {
+          padding: 0;
+          .checkbox {
+            margin: 10px;
+          }
+        }
+      }
+    }
+    .adding-note {
+      resize: none;
+    }
+  }
+}
+
+.completed {
+  text-decoration: line-through;
+  text-decoration-color: grey;
+}
