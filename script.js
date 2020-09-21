@@ -41,7 +41,7 @@ $(document).ready(function () {
       let i = todo.length;
       todo[i] = temp;
       let text = $(this).val();
-      let count = Number(localStorage.getItem("newNote_count"));
+      let count = Number(localStorage.getItem("newNote_count")) + 1;
 
       if (text !== "") {
         //what to add to ul
@@ -62,14 +62,13 @@ $(document).ready(function () {
             "</div>" +
             "</li>"
         );
-        console.log(count)
+        console.log(count);
         //add/save count and note to localStorage
-        localStorage.setItem("newNote_count", ++count);
+        localStorage.setItem("newNote_count", count);
         localStorage.setItem("newNote_value[" + count + "]", text);
-       
-        console.log(count)
+
+        console.log(count);
         localStorage.setItem("todo", JSON.stringify(todo));
-       
       } else {
         alert("Please add a note");
       }
@@ -81,12 +80,12 @@ $(document).ready(function () {
   //add note by clicking "save" button
   document.querySelector(".add-note").onclick = function () {
     let text = $(".text-adding").val();
-    let count = Number(localStorage.getItem("newNote_count"));
+    let count = Number(localStorage.getItem("newNote_count")) + 1;
 
     if (text !== "") {
       $("ul").append(
         '<li class="new-todo"  data-order = "' +
-          count++ +
+          count +
           '"' +
           ">" +
           '<div class="input-group form-group mb-3">' +
@@ -102,7 +101,7 @@ $(document).ready(function () {
           "</div>" +
           "</li>"
       );
-      localStorage.setItem("newNote_count", ++count);
+      localStorage.setItem("newNote_count", count);
       localStorage.setItem("newNote_value[" + count + "]", text);
       let temp = {};
       temp.check = false;
@@ -138,7 +137,7 @@ $(document).ready(function () {
   //disable note which is done,by clicking "checkbox"
   $("ul").on("click", ".checkbox", function () {
     let checkbox = document.querySelectorAll(".checkbox");
-    for (let index = 0; index < checkbox.length; index++) {
+    for (let index = 1; index <= checkbox.length; index++) {
       //add attribute "disabled" to li
       if ($(checkbox[index]).is(":checked")) {
         todo[index].check = true;
@@ -182,6 +181,5 @@ $(document).ready(function () {
   $(function () {
     $("ul").sortable();
     $("ul").disableSelection();
-    
   });
 });
