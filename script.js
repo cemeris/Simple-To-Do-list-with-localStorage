@@ -1,18 +1,7 @@
-let todoForm = document.querySelector("#todo");
-let textField = document.querySelector("label");
-let ul = document.querySelector("ul");
-let li = document.querySelector(".new-todo");
-let allLi = document.querySelectorAll(".new-todo");
-let addButton = document.querySelector(".add-note");
-let removeButtons = document.querySelectorAll(".remove-button");
-let checkbox = document.querySelectorAll(".checkbox");
 let textAdding = document.querySelector(".text-adding");
-let allInputs = document.querySelectorAll(".new-note");
-let oneInput = document.querySelector(".new-note");
-let clear = document.querySelector(".clear");
-let newLi = document.createElement("li");
 let text = "";
 let count = Number(localStorage.getItem("newNote_count"));
+let todo = [];
 
 if (count === null) {
   localStorage.setItem("newNote_count", 0);
@@ -21,11 +10,11 @@ if (count === null) {
 
 for (let index = 1; index <= count; index++) {
   text = localStorage.getItem("newNote_value[" + index + "]");
+  // console.log(text)
 
-  $(ul).append(
-    '<li class="new-todo" data-order = "' +
+  $("ul").append(
+    '<li class="new-todo" data-order =' +
       index +
-      '"' +
       ">" +
       '<div class="input-group form-group mb-3">' +
       '<div class="input-group-prepend input-group-text">' +
@@ -47,16 +36,18 @@ $(document).ready(function () {
   $(textAdding).on("keypress", function (event) {
     if (event.which === 13) {
       event.preventDefault();
-
+      let temp = {};
+      temp.check = false;
+      let i = todo.length;
+      todo[i] = temp;
       let text = $(this).val();
       let count = Number(localStorage.getItem("newNote_count"));
 
       if (text !== "") {
         //what to add to ul
-        $(ul).append(
-          '<li class="new-todo" data-order = "' +
+        $("ul").append(
+          '<li class="new-todo" data-order =' +
             count +
-            '"' +
             ">" +
             '<div class="input-group form-group mb-3">' +
             '<div class="input-group-prepend input-group-text">' +
@@ -71,9 +62,14 @@ $(document).ready(function () {
             "</div>" +
             "</li>"
         );
+        console.log(count)
         //add/save count and note to localStorage
         localStorage.setItem("newNote_count", ++count);
         localStorage.setItem("newNote_value[" + count + "]", text);
+       
+        console.log(count)
+        localStorage.setItem("todo", JSON.stringify(todo));
+       
       } else {
         alert("Please add a note");
       }
@@ -83,14 +79,14 @@ $(document).ready(function () {
   });
 
   //add note by clicking "save" button
-  addButton.onclick = function () {
+  document.querySelector(".add-note").onclick = function () {
     let text = $(".text-adding").val();
     let count = Number(localStorage.getItem("newNote_count"));
 
     if (text !== "") {
-      $(ul).append(
+      $("ul").append(
         '<li class="new-todo"  data-order = "' +
-          count +
+          count++ +
           '"' +
           ">" +
           '<div class="input-group form-group mb-3">' +
@@ -108,14 +104,20 @@ $(document).ready(function () {
       );
       localStorage.setItem("newNote_count", ++count);
       localStorage.setItem("newNote_value[" + count + "]", text);
+      let temp = {};
+      temp.check = false;
+      let i = todo.length;
+      todo[i] = temp;
+
+      localStorage.setItem("todo[" + count + "]", JSON.stringify(todo));
+
       $(textAdding).val("");
     } else alert("Please add a note");
   };
 
   //delete note from site and localStorage
-  $(ul).on("click", ".remove-button", function () {
+  $("ul").on("click", ".remove-button", function () {
     let newText = $(this).closest("li").data("order");
-    console.log(newText);
     count = Number(localStorage.getItem("newNote_count"));
     localStorage.removeItem("newNote_value[" + ++newText + "]"); //delete exact note from localStorage
     localStorage.setItem("newNote_count", --count); //reduce count of notes
@@ -123,33 +125,54 @@ $(document).ready(function () {
   });
 
   //if update note, to save updated text to localStorage
-  $(ul).on("input", ".new-note", ".new-todo", function () {
+  $("ul").on("input", ".new-note", ".new-todo", function () {
     let text = $(this).val();
     let newText = $(this).closest("li").data("order"); //taking number of li
     localStorage.setItem("newNote_value[" + ++newText + "]", text); //input updated text to localStorage
   });
 
+  if (localStorage.getItem("todo")) {
+    todo = JSON.parse(localStorage.getItem("todo"));
+  }
+
   //disable note which is done,by clicking "checkbox"
-  $(ul).on("click", ".checkbox", function () {
+  $("ul").on("click", ".checkbox", function () {
     let checkbox = document.querySelectorAll(".checkbox");
     for (let index = 0; index < checkbox.length; index++) {
       //add attribute "disabled" to li
       if ($(checkbox[index]).is(":checked")) {
+        todo[index].check = true;
         $(checkbox[index])
           .closest("li")
           .find("textarea")
           .attr("disabled", true);
       } else {
+        todo[index].check = false;
         $(checkbox[index])
           .closest("li")
           .find("textarea")
           .removeAttr("disabled");
       }
+      localStorage.setItem("todo", JSON.stringify(todo));
     }
   });
+  window.onload = function () {
+    let checkbox = document.querySelectorAll(".checkbox");
+
+    for (const key in todo) {
+      if (todo[key].check == true) {
+        $(checkbox[key]).attr("checked", "checked");
+        $(checkbox[key]).closest("li").find("textarea").attr("disabled", true);
+      } else {
+        $(checkbox[key]).removeAttr("checked");
+        $(checkbox[key]).closest("li").find("textarea").attr("disabled", false);
+      }
+    }
+  };
+  // };
 
   //to clear all notes from site and localStorage
-  clear.onclick = function () {
+  document.querySelector(".clear").onclick = function () {
     localStorage.clear();
     $("#todo").find("ul").text("");
   };
@@ -157,7 +180,8 @@ $(document).ready(function () {
   //to be able to move notes up and down
 
   $(function () {
-    $(ul).sortable();
-    $(ul).disableSelection();
+    $("ul").sortable();
+    $("ul").disableSelection();
+    
   });
 });
